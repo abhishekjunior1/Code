@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>CPM to Services Diagram</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: sans-serif;
+    }
+
+    .box {
+      position: absolute;
+      width: 100px;
+      height: 30px;
+      border: 1px solid black;
+      text-align: center;
+      line-height: 30px;
+      background: white;
+    }
+
+    #cpm {
+      left: 100px;
+      top: 120px;
+    }
+
+    #final {
+      left: 100px;
+      top: 220px;
+    }
+
+    #services-container {
+      position: absolute;
+      left: 400px;
+      top: 30px;
+      width: 160px;
+      height: 230px;
+      border: 1px solid black;
+    }
+
+    .service {
+      position: absolute;
+      width: 100px;
+      height: 30px;
+      border: 1px solid black;
+      text-align: center;
+      line-height: 30px;
+      background: white;
+      left: 30px;
+    }
+
+    #service1 { top: 10px; }
+    #service2 { top: 50px; }
+    #service3 { top: 90px; }
+    #service4 { top: 130px; }
+    #service5 { top: 170px; }
+
+    canvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      z-index: -1;
+    }
+  </style>
+</head>
+<body>
+  <canvas id="connectorCanvas" width="1000" height="500"></canvas>
+
+  <div class="box" id="cpm">CPM</div>
+  <div class="box" id="final">Final</div>
+
+  <div id="services-container">
+    <div class="service" id="service1">service1</div>
+    <div class="service" id="service2">service2</div>
+    <div class="service" id="service3">service3</div>
+    <div class="service" id="service4">service4</div>
+    <div class="service" id="service5">service5</div>
+  </div>
+
+  <script>
+  const canvas = document.getElementById('connectorCanvas');
+  const ctx = canvas.getContext('2d');
+
+  function getCoords(el) {
+    const rect = el.getBoundingClientRect();
+    return {
+      left: rect.left + window.scrollX,
+      right: rect.right + window.scrollX,
+      top: rect.top + window.scrollY,
+      bottom: rect.bottom + window.scrollY,
+      centerX: rect.left + rect.width / 2 + window.scrollX,
+      centerY: rect.top + rect.height / 2 + window.scrollY
+    };
+  }
+
+  function drawLine(from, to) {
+    ctx.beginPath();
+    ctx.setLineDash([4, 3]); // ← This makes the line dotted
+    ctx.moveTo(from.x, from.y);
+    ctx.lineTo(to.x, to.y);
+    ctx.stroke();
+    ctx.setLineDash([]); // Reset for any future solid lines (optional)
+  }
+
+  const cpm = document.getElementById('cpm');
+  const final = document.getElementById('final');
+  const servicesContainer = document.getElementById('services-container');
+
+  const services = [
+    document.getElementById('service1'),
+    document.getElementById('service2'),
+    document.getElementById('service3'),
+    document.getElementById('service4'),
+    document.getElementById('service5')
+  ];
+
+  function drawAllLines() {
+    const cpmCoords = getCoords(cpm);
+    const finalCoords = getCoords(final);
+
+    // Draw dotted lines from CPM to each service
+    services.forEach(service => {
+      const svcCoords = getCoords(service);
+      drawLine(
+        { x: cpmCoords.right, y: cpmCoords.centerY },
+        { x: svcCoords.left, y: svcCoords.centerY }
+      );
+    });
+
+    // Dotted line from CPM to final
+    drawLine(
+      { x: cpmCoords.centerX, y: cpmCoords.bottom },
+      { x: finalCoords.centerX, y: finalCoords.top }
+    );
+
+    // Dotted line from final to bottom-left of container
+    const containerCoords = getCoords(servicesContainer);
+    drawLine(
+      { x: finalCoords.right, y: finalCoords.centerY },
+      { x: containerCoords.left, y: containerCoords.bottom - 22 }
+    );
+  }
+
+  drawAllLines();
+</script>
+
+</body>
+</html>
