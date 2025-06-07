@@ -1,5 +1,3 @@
-package Advance DSA.Binary Search;
-
 public class basic {
     public static void main(String[] args) {
         // Example usage of binary search
