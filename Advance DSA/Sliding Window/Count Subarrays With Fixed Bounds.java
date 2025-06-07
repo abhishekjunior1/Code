@@ -1,3 +1,4 @@
+//Find all subarrays and check if min is minK and max is maxK
 class Solution {
     public long countSubarrays(int[] nums, int minK, int maxK) {
         long count = 0;
