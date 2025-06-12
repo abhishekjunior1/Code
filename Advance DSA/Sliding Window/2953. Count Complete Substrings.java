@@ -1,4 +1,5 @@
 //https://leetcode.com/problems/count-complete-substrings/
+
 class Solution {
     public int countCompleteSubstrings(String word, int k) {
         int n = word.length();
